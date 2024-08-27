@@ -68,11 +68,15 @@ def save_to_csv(products, filename):
 def download_image(image_url, folder_path, image_name):
     response = requests.get(image_url)
     if response.status_code == 200:
-        with open(os.path.join(folder_path, image_name), 'wb') as file:
+        file_path = os.path.join(folder_path, image_name)
+        print(f"Saving image to: {file_path}")  
+        with open(file_path, 'wb') as file:
             file.write(response.content)
 
 def sanitize_filename(filename):
-    return re.sub(r'[\/:*?"<>|'']', '_', filename)
+    sanitized = re.sub(r'[\/:*?"<>’|\']', '_', filename)
+    sanitized = sanitized.strip()
+    return sanitized
 
 def main_page_scrape(url):
     page = requests.get(url)
@@ -107,7 +111,9 @@ def scrape_category(category_url, category_name):
             all_product_details.append(details)
             image_url = details.get('Image URL')
             title = details.get('Title', 'unknown')
+            print(f"Original Title: {title}")  
             sanitized_title = sanitize_filename(title) + '.jpg'
+            print(f"Sanitized Title for Download: {sanitized_title}")  
             if image_url:
                 download_image(image_url, images_folder, sanitized_title)
         
