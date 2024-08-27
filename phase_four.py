@@ -72,7 +72,7 @@ def download_image(image_url, folder_path, image_name):
             file.write(response.content)
 
 def sanitize_filename(filename):
-    return re.sub(r'[\/:*?"<>’|]', '_', filename)
+    return re.sub(r'[\/:*?"<>’“”|]', '_', filename)
 
 def main_page_scrape(url):
     page = requests.get(url)
